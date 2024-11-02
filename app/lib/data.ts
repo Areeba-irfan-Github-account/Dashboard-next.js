@@ -9,8 +9,6 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 
-
-// Fetch the last 5 invoices, sorted by date
 const data = await sql<LatestInvoiceRaw>`
   SELECT invoices.amount, customers.name, customers.image_url, customers.email
   FROM invoices
@@ -22,9 +20,6 @@ const data = await sql<LatestInvoiceRaw>`
 const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
 export async function fetchRevenue() {
   try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
-
     console.log('Fetching revenue data...');
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
@@ -34,7 +29,7 @@ export async function fetchRevenue() {
 
     return data.rows;
   } catch (error) {
-    console.error('Database Error:', error);
+  
     throw new Error('Failed to fetch revenue data.');
   }
 }
@@ -61,9 +56,6 @@ export async function fetchLatestInvoices() {
 
 export async function fetchCardData() {
   try {
-    // You can probably combine these into a single SQL query
-    // However, we are intentionally splitting them to demonstrate
-    // how to initialize multiple queries in parallel with JS.
     const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
     const invoiceStatusPromise = sql`SELECT
@@ -165,7 +157,6 @@ export async function fetchInvoiceById(id: string) {
 
     const invoice = data.rows.map((invoice) => ({
       ...invoice,
-      // Convert amount from cents to dollars
       amount: invoice.amount / 100,
     }));
 

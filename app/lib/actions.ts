@@ -34,14 +34,14 @@ export type State = {
 };
 
 export async function createInvoice(prevState: State, formData: FormData) {
-  // Validate form fields using Zod
+ 
   const validatedFields = CreateInvoice.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
 
-  // If form validation fails, return errors early. Otherwise, continue.
+
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
@@ -60,14 +60,13 @@ export async function createInvoice(prevState: State, formData: FormData) {
       INSERT INTO invoices (customer_id, amount, status, date)
       VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
     `;
-  } catch (error) {
-    // If a database error occurs, return a more specific error.
+  } catch {
     return {
-      message: 'Database Error: Failed to Create Invoice.',
+      message: ' Failed to Create Invoice.',
     };
   }
 
-  // Revalidate the cache for the invoices page and redirect the user.
+  
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 }
@@ -108,13 +107,13 @@ export async function updateInvoice(
 }
 
 export async function deleteInvoice(id: string) {
-//   throw new Error('Failed to Delete Invoice');
+
   try {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
     revalidatePath('/dashboard/invoices');
     return { message: 'Deleted Invoice' };
   } catch (error) {
-    return { message: 'Database Error: Failed to Delete Invoice.' };
+    return { message: ' Failed to Delete Invoice.' };
   }
 }
 
